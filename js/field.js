@@ -4,92 +4,48 @@ class Field {
 
         this.n = n;
         this.m = m;
+        this.minGroupLength = 2;
+        this.neededColor = "";
         this.tiles = [];
-        this.groups = [];
+        this.checkedTiles = new Set();
+        this.group = new Set();
     }
+
+    getTile(x, y) {
+
+        return this.tiles[x][y];
+    }
+
+    getGroup() {
+
+        return this.group;
+    }
+
+    getMinGroupLength() {
+
+        return this.minGroupLength;
+    }
+
+    setNeededColor(color) {
+
+        this.neededColor = color; 
+    } 
 
     createField() {
 
-        var done = false;
-        while (!done) {
-            var index = 0;
-            for (var x = 0; x < this.n; x++) {
-                this.tiles[x] = [];
-                for (var y = 0; y < this.m; y++) {
-                    var tile = new Tile(index, colors[getRandom(0, colors.length - 1)], x, y)
-                    this.tiles[x][y] = tile;
-                    index++;
-                }
-            }
-            this.findGroups();
-            if (this.groups.length > 0) {
-                done = true;
-            }
-        }
-        this.showField(field)
-    }
-
-    findGroups() {
-
-        this.groups = [];
-        // Группы тайлов по вертикали
+        var index = 0;
         for (var x = 0; x < this.n; x++) {
-            var groupLength = 1;
+            this.tiles[x] = [];
             for (var y = 0; y < this.m; y++) {
-                var isGroup = false;
-                if (y == this.m - 1) {
-                    isGroup = true;
-                } else {
-                    if (this.tiles[x][y].color == this.tiles[x][y+1].color &&
-                        this.tiles[x][y].color != "blank") {
-                        groupLength += 1;
-                    } else {
-                        isGroup = true;
-                    }
-                }
-                if (isGroup) {
-                    if (groupLength >= 3) {
-                        this.groups.push({ x: x, 
-                                        y: y + 1 - groupLength,
-                                        len: groupLength, 
-                                        horizontal: false });
-                    }
-
-                    groupLength = 1;
-                }
-            }
-        }
-        // Группы тайлов по горизонтали
-        for (var y = 0; y < this.m; y++) {
-            var groupLength = 1;
-            for (var x = 0; x < this.n; x++) {
-                var isGroup = false;
-                if (x == this.n - 1) {
-                    isGroup = true;
-                } else {
-                    if (this.tiles[x][y].color == this.tiles[x+1][y].color &&
-                        this.tiles[x][y].color != "blank") {
-                        groupLength += 1;
-                    } else {
-                        isGroup = true;
-                    }
-                }
-
-                if (isGroup) {
-                    if (groupLength >= 3) {
-                        this.groups.push({ x: x+1-groupLength, 
-                                        y: y,
-                                        len: groupLength, 
-                                        horizontal: true });
-                    }
-
-                    groupLength = 1;
-                }
+                var tile = new Tile(index, colors[getRandom(0, colors.length - 1)], x, y)
+                this.tiles[x][y] = tile;
+                index++;
             }
         }
     }
 
-    showField(field) {
+    showField() {
+
         var window = document.querySelector(".window");
         var field = document.querySelector("table");
         if (field) {
@@ -105,13 +61,58 @@ class Field {
                 tile.setAttribute("class", "tile");
                 tile.setAttribute("id", this.tiles[x][y].index)
                 tile.setAttribute("onclick", "clickedOnTile(" + x + ", " + y + ")")
-                tile.style.background = "URL('./assets/img/" + this.tiles[x][y].color + ".png') no-repeat";
-                tile.style.backgroundSize = "cover";
+                if (!this.tiles[x][y].isEmpty()) {
+                    tile.style.background = "URL('./assets/img/" + this.tiles[x][y].color + ".png') no-repeat";
+                    tile.style.backgroundSize = "cover";
+                }
                 td.appendChild(tile);
                 tr.appendChild(td);
             }
             field.appendChild(tr);
         }
         window.appendChild(field);
+    }
+
+    findGroup(x, y) {
+
+        if (this.checkCoordinates(x, y)) {
+            if (!this.checkedTiles.has(this.tiles[x][y]) && 
+                this.tiles[x][y].getColor() == this.neededColor) {
+                this.group.add(this.tiles[x][y]);
+                this.checkedTiles.add(this.tiles[x][y]);
+                this.findGroup(x+1, y);
+                this.findGroup(x, y+1);
+                this.findGroup(x-1, y);
+                this.findGroup(x, y-1);
+            }
+            
+        }
+    }
+
+    clearGroup() {
+
+        this.neededColor = "";
+        this.group.clear();
+        this.checkedTiles.clear();
+    }
+
+    removeGroup() {
+
+        for (var tile of this.group) {
+            tile.setColor("blank");
+        }
+        this.clearGroup();
+    }
+
+    moveTiles() {
+
+    }
+
+    checkCoordinates(x, y) {
+
+        if (x < 0 || y < 0 || x >= this.n || y >= this.m) {
+            return false;
+        }
+        return true;
     }
 }

@@ -1,6 +1,7 @@
 const colors = ['blue', 'green', 'red', 'yellow', 'purple'];
-field = new Field(9, 9)
-window.onload = field.createField()
+field = new Field(9, 9);
+window.onload = field.createField();
+field.showField();
 
 function getRandom(min, max) {
 
@@ -9,7 +10,17 @@ function getRandom(min, max) {
 
 function clickedOnTile(x, y) {
 
-    var tile = field.tiles[x][y];
-    console.log("clicked on tile(" + tile.x + ", " + tile.y + ") with color " + tile.color);
+    var tile = field.getTile(x, y);
+    if (!tile.isEmpty()) {
+        field.setNeededColor(tile.getColor());
+        field.findGroup(x, y);
+        if (field.getGroup().size >= field.getMinGroupLength()){
+            field.removeGroup();
+            field.showField();
+            // field.moveTiles();
+        } else {
+            field.clearGroup();
+        }
+    }
 }
 
