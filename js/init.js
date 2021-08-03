@@ -16,8 +16,16 @@ function clickedOnTile(x, y) {
         field.findGroup(x, y);
         if (field.getGroup().size >= field.getMinGroupLength()){
             field.removeGroup();
+            field.moveTiles();
+            field.fillEmptyTiles();
             field.showField();
-            // field.moveTiles();
+            if (field.getSteps() < 1) {
+                if (field.getScores() >= field.getNeededScores())
+                    alert("Ты выиграл!");
+                else
+                    alert("Ты проиграл!");
+                field.reloadField();
+            }
         } else {
             field.clearGroup();
         }
