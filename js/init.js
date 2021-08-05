@@ -19,12 +19,14 @@ function clickedOnTile(x, y) {
             field.moveTiles();
             field.fillEmptyTiles();
             field.showField();
-            if (field.getSteps() < 1) {
-                if (field.getScores() >= field.getNeededScores())
-                    alert("Ты выиграл!");
-                else
-                    alert("Ты проиграл!");
-                field.reloadField();
+            if (field.getScores() >= field.getNeededScores()) {
+                alert("Ты выиграл! Поздравляем!");
+                field.reloadField()
+            } else {
+                if (field.getMoves() < 1) {
+                    alert('Очень жаль, но ты проиграл. Попробуй снова.');
+                    field.reloadField()
+                }
             }
         } else {
             field.clearGroup();

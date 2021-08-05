@@ -8,7 +8,7 @@ class Field {
         this.neededColor = "";
         this.scores = 0;
         this.neededScores = 200;
-        this.steps = 10;
+        this.moves = 10;
         this.tiles = [];
         this.checkedTiles = new Set();
         this.group = new Set();
@@ -29,9 +29,9 @@ class Field {
         this.scores += points;
     }
 
-    getSteps() {
+    getMoves() {
 
-        return this.steps;
+        return this.moves;
     }
 
     getTile(x, y) {
@@ -71,7 +71,8 @@ class Field {
 
         this.createField();
         this.scores = 0;
-        this.steps = 10;
+        this.moves = 10;
+        document.getElementById("progress").style.width = "0";
         this.showField();
     }
 
@@ -80,7 +81,7 @@ class Field {
         let window = document.querySelector(".window");
         let field = document.querySelector("table");
         let scoresLabel = document.getElementById("scores");
-        let stepsLabel = document.getElementById("steps");
+        let movesLabel = document.getElementById("moves");
         if (field) {
             window.removeChild(field);
         }
@@ -104,7 +105,7 @@ class Field {
             field.appendChild(tr);
         }
         scoresLabel.textContent = "Очки: " + this.scores.toString();
-        stepsLabel.textContent = "Шаги: " + this.steps.toString();
+        movesLabel.textContent = "Шаги: " + this.moves.toString();
         window.appendChild(field);
     }
 
@@ -133,15 +134,29 @@ class Field {
 
     removeGroup() {
 
-        let size = this.group.size;
+        this.updateProgress(this.group.size);
         for (let tile of this.group) {
             tile.setColor("blank");
         }
-        if (size == 2) this.addScores(5); 
-        else if (size <= 5) this.addScores(size * 5);
-        else this.addScores(size * 10);
-        this.steps--;
         this.clearGroup();
+    }
+
+    updateProgress(countOfTiles) {
+
+        let progressBar = document.getElementById("progress");
+        if (countOfTiles == 2) {
+            this.addScores(5); 
+        } else if (countOfTiles <= 5) {
+            this.addScores(countOfTiles * 5);
+        } else {
+            this.addScores(countOfTiles * 10);
+        }
+        if (this.scores >= this.neededScores) {
+            progressBar.style.width = "100%";
+        } else {
+            progressBar.style.width = ((100 * this.scores) / this.neededScores).toString() + "%";
+        }
+        this.moves--;
     }
 
     moveTiles() {
