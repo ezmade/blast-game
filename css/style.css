@@ -7,45 +7,7 @@ body {
     width: 100vw;
     height: 100vh;
     display: flex;
-    /* align-items: center; */
-    justify-content: center;
-    background-color: #abc4e2;
-}
-
-table {
-    background-color: #0d233d;
-    padding: 5px;
-    border-radius: 15px;
-    box-shadow: inset 0 0 10px 0 #98efff, 0 0 6px 0 #98efff, 0 0 10px 0 #98efff;
-}
-
-.tile {
-    height: 45px;
-    width: 40px;
-}
-
-#progressFrame {
-    display: flex;
     align-items: center;
     justify-content: center;
-    width: auto;
-    height: 100px;
-    background-color: #0c2d5a;
-    border-radius: 0px 0px 15px 15px;
-}
-
-#progressBar {
-    margin-top: 40px;
-    width: 350px;
-    height: 30px;
-    background-color: #011633;
-    border-radius: 20px;
-}
-
-#progress {
-    width: 0%;
-    height: 30px;
-    background-color: #42b500;
-    border-radius: 20px;
-    box-shadow: inset 0 0 10px 1px white;
+    background-color: #abc4e2;
 }
