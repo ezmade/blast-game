@@ -1,5 +1,5 @@
 import Phaser from './phaser.js'
-import Field from './Field.js'
+import Field from './field.js'
 
 const settings = {
     scaleFactor: 0.25,
