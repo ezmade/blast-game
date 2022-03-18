@@ -1,4 +1,4 @@
-import Tile from './Tile.js'
+import Tile from './tile.js'
 import { colors, getRandom } from './script.js'
 
 export default class Field {
